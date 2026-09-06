@@ -1,0 +1,1757 @@
+<!-- جایگزین کل فایل index.html با این کد: -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>تاکسی خانم پاپلی - سیستم مدیریت</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <!-- Google Fonts removed - using local fonts only -->
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        
+        /* Jalali Date Picker Styles */
+        .jalali-datepicker {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            padding: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+        }
+        
+        .jalali-datepicker button {
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        .jalali-datepicker input {
+            cursor: pointer;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding-bottom: 70px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;gap: 12px;
+        }
+        
+        .logo-small {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+        
+        .logo-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .header-title h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .header-title p { font-size: 0.7rem; opacity: 0.85; }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        .content { display:none; padding: 15px; max-width: 600px; margin: 0 auto; }
+        .content.active { display: block; }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .card h3 {
+            font-size: 1rem;
+            color: #1a73e8;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f0fe;
+        }
+        
+        .form-group { margin-bottom: 15px; }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a73e8;
+            background: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .btn-primary { background: #1a73e8; color: white; width: 100%; }
+        .btn-primary:active { background: #1557b0; transform: scale(0.98); }
+        
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        
+        .btn-success { background: #34a853; color: white; }
+        .btn-danger { background: #ea4335; color: white; }
+        .btn-warning { background: #fbbc04; color: #333; }
+        .btn-info { background: #4285f4; color: white; }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;margin: 2px;
+        }
+        
+        .btn-block { width: 100%; margin-bottom: 10px; }
+        
+        .customer-card {
+            background: white;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-right: 4px solid #1a73e8;
+        }
+        
+        .customer-card.daily { border-right-color: #34a853; }
+        
+        .customer-name { font-weight: 700; font-size: 1rem; color: #333; }
+        .customer-phone { color: #666; font-size: 0.85rem; margin: 4px 0; }
+        .customer-rate { color: #1a73e8; font-weight: 500; font-size: 0.9rem; }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-monthly { background: #e8f0fe; color: #1a73e8; }
+        .badge-daily { background: #e6f4ea; color: #34a853; }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .search-result {
+            cursor: pointer;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+        
+        .search-result:active { background: #f0f7ff; }
+        
+        .selected-customer {
+            background: #e8f0fe;
+            border: 2px solid #1a73e8;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .invoice-preview {
+            background: #f8f9fa;
+            border: 1px dashed #aaa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            line-height: 2;
+        }
+        
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a73e8;}
+        
+        .stat-label { font-size: 0.8rem; color: #777; margin-top: 5px; }
+        
+        .report-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-right: 3px solid #ccc;
+        }
+        
+        .report-item.monthly_end { border-right-color: #1a73e8; }
+        .report-item.daily { border-right-color: #34a853; }
+        .report-item.monthly_start { border-right-color: #fbbc04; }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 200;
+        }
+        
+        .nav-item {
+            flex: 1;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+            border: none;
+            background: none;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        .nav-item.active { color: #1a73e8; }
+        
+        .nav-item .nav-icon { font-size: 1.3rem; display: block; }
+        .nav-item .nav-label { font-size: 0.6rem; display: block; margin-top: 2px; }
+
+        /* شیت «بیشتر» */
+        .sheet-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 998;
+        }
+        .sheet-overlay.open { display: block; }
+        .more-sheet {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+            z-index: 999;
+            padding: 8px 0 calc(70px + env(safe-area-inset-bottom, 0px));
+            transform: translateY(100%);
+            transition: transform 0.25s ease-out;
+        }
+        .more-sheet.open { transform: translateY(0); }
+        .more-sheet-handle {
+            width: 40px; height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin: 8px auto 12px;
+        }
+        .more-sheet-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 1rem;
+            text-align: right;
+            cursor: pointer;
+        }
+        .more-sheet-item:active { background: #f5f5f5; }
+        .more-sheet-item .nav-icon { font-size: 1.2rem; }
+
+        /* مودال سفارشی به‌جای alert/confirm/prompt بومی */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 340px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .modal-message {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin-bottom: 16px;
+            text-align: right;
+        }
+        .modal-box input, .modal-box .form-group {
+            margin-bottom: 12px;
+        }
+        .modal-box label {
+            display: block;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .modal-actions .btn { flex: 1; margin: 0; }
+        .modal-actions .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .alert-success { background: #e6f4ea; color: #1e8e3e; border: 1px solid #a8d5b5; }
+        .alert-error { background: #fce8e6; color: #c62828; border: 1px solid #f5a99b; }
+        .alert-info { background: #e8f0fe; color: #1a73e8; border: 1px solid #aac4fb; }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+        }
+        
+        .empty-state .icon { font-size: 3rem; margin-bottom: 10px; }
+        
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 15px 0;
+        }
+        
+        .total-bar {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .total-bar .amount { font-size: 1.5rem; font-weight: 700; }
+        .total-bar .label { font-size: 0.8rem; opacity: 0.8; margin-top: 5px; }
+        
+        @media (min-width: 600px) {
+            .action-grid { grid-template-columns: 1fr 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-right">
+        <div class="logo-small">
+            <img src="logo.png" alt="لوگو">
+        </div>
+        <div class="header-title">
+            <h1>🚕 تاکسی خانم پاپلی</h1>
+            <p id="headerDate"></p>
+        </div></div>
+    <button class="logout-btn" onclick="logout()">خروج</button>
+</div>
+
+<!-- ===== داشبورد ===== -->
+<div id="dashboard" class="content active">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+        <div class="stat-box">
+            <div class="stat-number" id="statCustomers">-</div>
+            <div class="stat-label">مشتری فعال</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="statToday">-</div>
+            <div class="stat-label">درآمد امروز</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="statMonth">-</div>
+            <div class="stat-label">درآمد این ماه</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="statTotal">-</div>
+            <div class="stat-label">کل درآمد</div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>⚡ دسترسی سریع</h3>
+        <div class="action-grid">
+            <button class="btn btn-primary" onclick="switchTab('register')">➕ ثبت مشتری</button>
+            <button class="btn btn-success" onclick="switchTab('rental')">📋 ثبت کرایه</button>
+            <button class="btn btn-info" onclick="switchTab('invoice')">📨 ارسال فاکتور</button>
+            <button class="btn btn-warning" onclick="switchTab('report')">📊 گزارش</button>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>🕐 آخرین فعالیت‌ها</h3>
+        <div id="recentActivity"><div class="loading">در حال بارگذاری...</div></div>
+    </div>
+</div>
+<!-- تب ثبت پرداخت -->
+<div id="payment" class="content">
+    <div class="card">
+        <h3>💳 ثبت پرداختی مشتری</h3>
+        <div class="form-group">
+            <label>جستجوی مشتری</label>
+            <input type="text" id="paySearchCustomer" onkeyup="searchPayCustomer()" placeholder="🔍 نام یا شماره تماس مشتری...">
+        </div>
+        <div id="payCustomerList"></div>
+
+        <div id="payActionSection" style="display: none;">
+            <div class="selected-customer">
+                پرداخت برای: <strong id="payCustomerName"></strong>
+            </div>
+            <div class="form-group">
+                <label>مبلغ پرداخت (تومان)</label>
+                <input type="text" id="payAmount" placeholder="مثلاً ۵۰۰,۰۰۰" inputmode="numeric" class="money-input">
+            </div>
+            <button class="btn btn-primary btn-block" id="submitPaymentBtn" onclick="submitPayment()">✅ ثبت پرداختی</button>
+        </div>
+    </div>
+</div>
+<!-- ===== ثبت مشتری ===== -->
+<div id="register" class="content">
+    <div class="card">
+        <h3>➕ ثبت مشتری جدید</h3>
+        <div id="registerMsg"></div>
+        <form id="customerForm">
+            <div class="form-group">
+                <label>نام و نام خانوادگی *</label>
+                <input type="text" id="custName" placeholder="مثال: علی احمدی" required>
+            </div>
+            <div class="form-group">
+                <label>شماره موبایل *</label>
+                <input type="tel" id="custPhone" placeholder="09xxxxxxxxx" required>
+            </div>
+            <div class="form-group">
+                <label>نوع سرویس</label>
+                <select id="custType">
+                    <option value="monthly">ماهانه</option>
+                    <option value="daily">روزانه</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>نرخ (تومان)</label>
+                <input type="text" id="custRate" placeholder="مثال: ۵۰۰,۰۰۰" inputmode="numeric" class="money-input">
+            </div>
+            <div class="form-group">
+                <label>توضیحات (اختیاری)</label>
+                <input type="text" id="custNote" placeholder="آدرس، مسیر، ...">
+            </div>
+            <button type="submit" class="btn btn-primary" id="customerSubmitBtn">💾 ثبت مشتری</button>
+        </form>
+    </div>
+</div>
+
+<!-- ===== مشتریان ===== -->
+<div id="customers" class="content">
+    <div class="card">
+        <h3>👥 لیست مشتریان</h3>
+        <input type="text" id="searchCustomerList" placeholder="🔍 جستجو در مشتریان..." 
+               oninput="filterCustomers(this.value)" style="margin-bottom:15px;">
+        <div id="customersList"><div class="loading">در حال بارگذاری...</div></div>
+    </div>
+</div>
+
+<!-- ===== ثبت کرایه ===== -->
+<div id="rental" class="content">
+    <div class="card">
+        <h3>📋 ثبت کرایه</h3>
+        <div class="form-group">
+            <label>جستجوی مشتری</label>
+            <input type="text" id="searchRental" placeholder="🔍 نام یا شماره موبایل..." 
+                   oninput="searchRentalCustomer(this.value)">
+        </div>
+        <div id="rentalSearchResults"></div>
+        
+        <div id="selectedRentalCustomer" style="display:none;">
+            <div class="selected-customer" id="rentalCustomerInfo"></div>
+            <div id="rentalMsg"></div>
+            
+            <div class="form-group" id="dailyAmountGroup" style="display:none;">
+                <label>مبلغ کرایه روزانه (تومان)</label>
+                <input type="text" id="dailyAmount" placeholder="اگر خالی باشد نرخ پیش‌فرض" inputmode="numeric" class="money-input">
+            </div>
+            
+            <div class="action-grid">
+                <button class="btn btn-success btn-block" onclick="doRental('start_monthly')">
+                    🟢 شروع ماهانه
+                </button>
+                <button class="btn btn-danger btn-block" onclick="doRental('end_monthly')">
+                    🔴 اتمام ماهانه
+                </button>
+            </div>
+            <button class="btn btn-warning btn-block" onclick="toggleDailyAmount(); doRental('daily')">
+                📅 ثبت روزانه
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ارسال فاکتور ===== -->
+<div id="invoice" class="content">
+    <div class="card">
+        <h3>📨 ارسال فاکتور</h3>
+        <div class="form-group">
+            <input type="text" id="searchInvoice" placeholder="🔍 جستجوی مشتری..." 
+                   oninput="searchInvoiceCustomer(this.value)">
+        </div>
+        <div id="invoiceSearchResults"></div>
+        
+        <!-- بقیه کدهای فاکتور که قبلا بود (دکمه های تایید و ارسال پیامک) -->
+        <div id="invoiceSection" style="display:none;">
+            <div class="selected-customer" id="invoiceCustomerInfo"></div>
+            <div class="invoice-preview">
+                <div id="invoiceText"></div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="sendSMS()">
+                📱 ارسال پیامک از گوشی
+            </button>
+            <button class="btn btn-success btn-block" onclick="confirmInvoiceSent()">
+                ✅ تایید ارسال و ثبت در سیستم
+            </button>
+        </div>
+        
+    </div>
+</div> <!-- پایان کامل تب فاکتور -->
+
+<!-- ===== گزارش ===== -->
+<div id="report" class="content">
+    <div class="card">
+        <h3>📊 گزارش‌گیری</h3>
+        <div class="form-group">
+            <label>از تاریخ</label>
+            <input type="text" id="fromDate" placeholder="انتخاب تاریخ..." readonly onclick="document.getElementById('fromDate').focus()">
+        </div>
+        <div class="form-group">
+            <label>تا تاریخ</label>
+            <input type="text" id="toDate" placeholder="انتخاب تاریخ..." readonly onclick="document.getElementById('toDate').focus()">
+        </div>
+        <div class="form-group">
+            <label>نوع گزارش</label>
+            <select id="reportType">
+                <option value="">همه</option>
+                <option value="monthly_end">کرایه ماهانه</option>
+                <option value="daily">کرایه روزانه</option>
+            </select>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="loadReport()">🔍 نمایش گزارش</button>
+    </div>
+    <div id="reportResult"></div>
+</div>
+<!-- ===== تنظیمات ===== -->
+<div id="settings" class="content">
+    
+    <!-- کارت تغییر رمز -->
+    <div class="card">
+        <h3>🔐 تغییر رمز عبور</h3>
+        <div id="passwordMsg"></div>
+        <form id="changePasswordForm">
+            <div class="form-group">
+                <label>رمز فعلی</label>
+                <input type="password" id="oldPassword" maxlength="4" required>
+            </div>
+            <div class="form-group">
+                <label>رمز جدید</label>
+                <input type="password" id="newPassword" maxlength="4" required>
+            </div>
+            <div class="form-group">
+                <label>تکرار رمز جدید</label>
+                <input type="password" id="confirmPassword" maxlength="4" required>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 ذخیره رمز جدید</button>
+        </form>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- کارت اتصال گیت‌هاب -->
+    <div class="card">
+        <h3>🔗 اتصال گیت‌هاب</h3>
+        <p style="font-size:13px;color:#666; margin-bottom:10px;">
+            اطلاعات این برنامه روی گیت‌هاب ذخیره می‌شود. برای تغییر ریپو/توکن یا اتصال از یک گوشی دیگر، از دکمه زیر استفاده کنید.
+        </p>
+        <button class="btn btn-secondary" onclick="location.href='setup.html'">⚙️ تنظیمات اتصال گیت‌هاب</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- کارت تنظیم ارسال پیامک -->
+    <div class="card">
+        <h3>📩 تنظیمات ارسال پیامک فاکتور</h3>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="enablePhoneSMS">
+                فعال سازی ارسال فاکتور از برنامه پیامک گوشی
+            </label>
+        </div>
+
+        <p style="font-size:13px;color:#666">
+            در صورت فعال بودن، هنگام ارسال فاکتور برنامه پیامک گوشی باز شده و متن فاکتور آماده ارسال خواهد بود.
+        </p>
+    </div>
+    <div class="divider"></div>
+
+    <!-- کارت ریست سیستم -->
+    <div class="card" style="border: 1px solid #ff4d4d; background-color: #fffafaa1;">
+        <h3 style="color: #d32f2f;">⚠️ ریست سیستم (حذف تمام کرایه‌ها)</h3>
+        <p style="font-size:13px;color:#666">
+            با کلیک روی دکمه زیر، <strong>تمام کرایه‌ها، سفرها و پرداختی‌های مربوط به آن‌ها</strong> پاک خواهند شد و بدهی همه مشتریان صفر می‌شود. لیست مشتریان و خودروها دست‌نخورده باقی می‌ماند. <br><span style="color:red">این عملیات غیرقابل بازگشت است!</span>
+        </p>
+        <button class="btn" style="background: #d32f2f; color: white;" onclick="resetSystem()">
+            🗑️ پاک کردن همه کرایه‌ها
+        </button>
+    </div>
+
+
+    <div class="divider"></div>
+
+    <!-- کارت اطلاعات حساب (بخش جدید) -->
+    <div class="card">
+        <h3>💳 مشخصات کارت جهت واریز</h3>
+
+        <div class="form-group">
+            <label for="bankAccountName">نام صاحب حساب</label>
+            <input type="text" id="bankAccountName" placeholder="مثال: علی محمدی">
+        </div>
+
+        <div class="form-group">
+            <label for="bankCardNumber">شماره کارت</label>
+            <input type="text" id="bankCardNumber" placeholder="مثال: ۶۰۳۷-۹۹۱۹-۱۲۳۴-۵۶۷۸">
+        </div>
+
+        <button class="btn btn-primary" onclick="saveBankSettings()">
+            💾 ذخیره مشخصات کارت
+        </button>
+    </div>
+
+</div>
+
+
+
+
+<!-- Bottom Navigation -->
+<!-- شیت «بیشتر» برای دسترسی به گزینه‌های کم‌استفاده‌تر -->
+<div id="moreSheetOverlay" class="sheet-overlay" onclick="toggleMoreSheet(false)"></div>
+<div id="moreSheet" class="more-sheet">
+    <div class="more-sheet-handle"></div>
+    <button class="more-sheet-item" onclick="openMoreTab('customers')">
+        <span class="nav-icon">👥</span> مشتریان
+    </button>
+    <button class="more-sheet-item" onclick="openMoreTab('invoice')">
+        <span class="nav-icon">📨</span> فاکتور
+    </button>
+    <button class="more-sheet-item" onclick="openMoreTab('report')">
+        <span class="nav-icon">📊</span> گزارش
+    </button>
+    <button class="more-sheet-item" onclick="openMoreTab('settings')">
+        <span class="nav-icon">⚙️</span> تنظیمات
+    </button>
+</div>
+
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('dashboard', this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">داشبورد</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('register', this)">
+        <span class="nav-icon">➕</span>
+        <span class="nav-label">ثبت</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('rental', this)">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">کرایه</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('payment', this)">
+        <span class="nav-icon">💳</span>
+        <span class="nav-label">پرداخت</span>
+    </button>
+    <button class="nav-item" id="moreNavBtn" onclick="toggleMoreSheet()">
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">بیشتر</span>
+    </button>
+</nav>
+
+<!-- مودال سفارشی به‌جای alert/confirm/prompt بومی -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-box" id="modalBox"></div>
+</div>
+
+    <script src="assets/gh-storage.js"></script>
+    <script src="assets/libs/jalali-datepicker.js"></script>
+    <script>
+        // ===== اتصال به گیت‌هاب و احراز هویت =====
+        // اگر تنظیمات اتصال به گیت‌هاب انجام نشده، اول به صفحه تنظیمات برو
+        if (!ghHasConfig()) {
+            window.location.href = 'setup.html';
+        }
+        // اگر کاربر لاگین نکرده باشد، به صفحه ورود منتقل می‌شود
+        const authToken = localStorage.getItem('auth_token');
+        if (!authToken) {
+            window.location.href = 'login.html';
+        }
+        // apiFetch و متغیر API اکنون در assets/gh-storage.js تعریف شده‌اند
+        // و به‌جای تماس با سرور PHP، مستقیم با گیت‌هاب کار می‌کنند
+
+        async function logout() {
+            if (!(await showConfirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟'))) return;
+            localStorage.removeItem('auth_token');
+            window.location.href = 'login.html';
+        }
+
+        // ===== تغییر رمز عبور =====
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgEl = document.getElementById('passwordMsg');
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                msgEl.innerHTML = '<div class="alert alert-error">❌ رمز جدید و تکرار آن یکسان نیستند</div>';
+                return;
+            }
+
+            try {
+                const res = await apiFetch(`${API}/auth.php`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({action: 'change_password', old_password: oldPassword, new_password: newPassword})
+                });
+                const result = await res.json();
+                if (result.success) {
+                    msgEl.innerHTML = '<div class="alert alert-success">✅ رمز عبور با موفقیت تغییر کرد</div>';
+                    e.target.reset();
+                } else {
+                    msgEl.innerHTML = `<div class="alert alert-error">❌ ${result.error || 'خطا در تغییر رمز'}</div>`;
+                }
+            } catch (err) {
+                msgEl.innerHTML = '<div class="alert alert-error">❌ خطا در ارتباط با گیت‌هاب</div>';
+            }
+        });
+
+        // ===== فرمت زنده‌ی اعداد پولی =====
+        // ورودی‌های مبلغ را هنگام تایپ با جداکننده هزارگان نمایش می‌دهد
+        function attachMoneyFormatting(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', function() {
+                const raw = this.value.replace(/[^\d]/g, '');
+                this.value = raw ? Number(raw).toLocaleString('en-US') : '';
+            });
+        }
+
+        function getRawNumber(id) {
+            const el = document.getElementById(id);
+            if (!el) return '';
+            return el.value.replace(/[^\d]/g, '');
+        }
+
+        // ===== مودال سفارشی به‌جای alert/confirm/prompt بومی =====
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.getElementById('modalBox').innerHTML = '';
+        }
+
+        function showAlert(message) {
+            return new Promise(resolve => {
+                const box = document.getElementById('modalBox');
+                box.innerHTML = `
+                    <div class="modal-message">${message}</div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="modalOkBtn">باشه</button>
+                    </div>
+                `;
+                document.getElementById('modalOverlay').classList.add('open');
+                document.getElementById('modalOkBtn').onclick = () => { closeModal(); resolve(); };
+            });
+        }
+
+        function showConfirm(message) {
+            return new Promise(resolve => {
+                const box = document.getElementById('modalBox');
+                box.innerHTML = `
+                    <div class="modal-message">${message}</div>
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" id="modalCancelBtn">لغو</button>
+                        <button class="btn btn-primary" id="modalConfirmBtn">تایید</button>
+                    </div>
+                `;
+                document.getElementById('modalOverlay').classList.add('open');
+                document.getElementById('modalCancelBtn').onclick = () => { closeModal(); resolve(false); };
+                document.getElementById('modalConfirmBtn').onclick = () => { closeModal(); resolve(true); };
+            });
+        }
+
+        function showPrompt(message, defaultValue) {
+            return new Promise(resolve => {
+                const box = document.getElementById('modalBox');
+                box.innerHTML = `
+                    <div class="modal-message">${message}</div>
+                    <input type="text" id="modalPromptInput" value="${defaultValue ? String(defaultValue).replace(/"/g, '&quot;') : ''}">
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" id="modalCancelBtn">لغو</button>
+                        <button class="btn btn-primary" id="modalOkBtn">تایید</button>
+                    </div>
+                `;
+                document.getElementById('modalOverlay').classList.add('open');
+                const input = document.getElementById('modalPromptInput');
+                input.focus();
+                document.getElementById('modalCancelBtn').onclick = () => { closeModal(); resolve(null); };
+                document.getElementById('modalOkBtn').onclick = () => { const v = input.value; closeModal(); resolve(v); };
+            });
+        }
+
+        // فرم ویرایش مشتری در یک مودال به‌جای سه prompt پشت‌سرهم
+        function showEditCustomerModal(customer) {
+            return new Promise(resolve => {
+                const box = document.getElementById('modalBox');
+                box.innerHTML = `
+                    <div class="modal-message" style="margin-bottom:12px;"><strong>ویرایش مشتری</strong></div>
+                    <div class="form-group">
+                        <label>نام و نام خانوادگی</label>
+                        <input type="text" id="editCustName" value="${(customer.name || '').replace(/"/g, '&quot;')}">
+                    </div>
+                    <div class="form-group">
+                        <label>شماره موبایل</label>
+                        <input type="text" id="editCustPhone" value="${(customer.phone || '').replace(/"/g, '&quot;')}">
+                    </div>
+                    <div class="form-group">
+                        <label>نرخ (تومان)</label>
+                        <input type="text" id="editCustRate" inputmode="numeric" class="money-input" value="${Number(customer.rate || 0).toLocaleString('en-US')}">
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" id="modalCancelBtn">لغو</button>
+                        <button class="btn btn-primary" id="modalOkBtn">ذخیره</button>
+                    </div>
+                `;
+                document.getElementById('modalOverlay').classList.add('open');
+                attachMoneyFormatting('editCustRate');
+                document.getElementById('modalCancelBtn').onclick = () => { closeModal(); resolve(null); };
+                document.getElementById('modalOkBtn').onclick = () => {
+                    const name = document.getElementById('editCustName').value.trim();
+                    const phone = document.getElementById('editCustPhone').value.trim();
+                    const rate = getRawNumber('editCustRate');
+                    closeModal();
+                    resolve({ name, phone, rate });
+                };
+            });
+        }
+    let selectedRentalCustomer = null;
+    let selectedInvoiceCustomer = null;
+    let invoiceData = null;
+    let allCustomers = [];
+
+    // ===== تاریخ فارسی =====
+    function setPersianDate() {
+        const now = new Date();
+        const options = { 
+            calendar: 'persian', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            weekday: 'long'
+        };
+        try {
+            document.getElementById('headerDate').textContent = 
+                new Intl.DateTimeFormat('fa-IR', options).format(now);
+        } catch(e) {
+            document.getElementById('headerDate').textContent = now.toLocaleDateString('fa-IR');
+        }
+    }
+    
+    // ===== مقداردهی تاریخ‌ها =====
+    function setDefaultDates() {
+        // Convert current date to Jalali
+        const now = new Date();
+        const gToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        
+        // Get first day of current month
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const gFirstDay = `${firstDay.getFullYear()}-${String(firstDay.getMonth() + 1).padStart(2, '0')}-${String(firstDay.getDate()).padStart(2, '0')}`;
+        
+        // Convert to Jalali for display
+        const todayJalali = gregorianToJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        const firstDayJalali = gregorianToJalali(firstDay.getFullYear(), firstDay.getMonth() + 1, firstDay.getDate());
+        
+        document.getElementById('fromDate').value = `${todayJalali.y}/${String(todayJalali.m).padStart(2, '0')}/${String(todayJalali.d).padStart(2, '0')}`;
+        document.getElementById('toDate').value = `${todayJalali.y}/${String(todayJalali.m).padStart(2, '0')}/${String(todayJalali.d).padStart(2, '0')}`;
+    }
+    
+    // Convert Gregorian to Jalali (for date handling)
+    function gregorianToJalali(gy, gm, gd) {
+        const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+        gy2 = (gm > 2) ? (gy + 1) : gy;
+        let days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+        let jy = -1595 + (33 * Math.floor(days / 12053));
+        days %= 12053;
+        jy += 4 * Math.floor(days / 1461);
+        days %= 1461;
+        if (days > 365) {
+            jy += Math.floor((days - 1) / 365);
+            days = (days - 1) % 365;
+        }
+        let jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+        let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+        return { y: jy, m: jm, d: jd };
+    }
+    
+    // Parse Jalali date string
+    function parseJalaliDate(str) {
+        const parts = str.split('/');
+        if (parts.length === 3) {
+            return { y: parseInt(parts[0]), m: parseInt(parts[1]), d: parseInt(parts[2]) };
+        }
+        return null;
+    }
+    
+    // Convert Jalali to Gregorian (for API requests)
+    function jalaliToGregorian(jy, jm, jd) {
+        jy += 1595;
+        let days = -355668 + (365 * jy) + (Math.floor(jy / 33) * 8) + Math.floor((Math.floor(jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+        let gy = 400 * Math.floor(days / 146097);
+        days %= 146097;
+        if (days > 36524) {
+            gy += 100 * Math.floor(--days / 36524);
+            days %= 36524;
+            if (days >= 365) days++;
+        }
+        gy += 4 * Math.floor(days / 1461);
+        days %= 1461;
+        if (days > 365) {
+            gy += Math.floor((days - 1) / 365);
+            days = (days - 1) % 365;
+        }
+        let gd = days + 1;
+        const sal_a = [0, 31, ((gy % 4 == 0 && gy % 100 != 0) || (gy % 400 == 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let gm = 0;
+        while (gm < 13 && gd > sal_a[gm]) gd -= sal_a[gm++];
+        return { y: gy, m: gm, d: gd };
+    }
+
+    // ===== تغییر تب =====
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if(btn) btn.classList.add('active');
+        
+        if(tabId === 'customers') loadCustomers();
+        if(tabId === 'dashboard') loadDashboard();
+    }
+
+    // ===== شیت «بیشتر» =====
+    function toggleMoreSheet(show) {
+        const sheet = document.getElementById('moreSheet');
+        const overlay = document.getElementById('moreSheetOverlay');
+        const isOpen = show === undefined ? !sheet.classList.contains('open') : show;
+        sheet.classList.toggle('open', isOpen);
+        overlay.classList.toggle('open', isOpen);
+    }
+
+    function openMoreTab(tabId) {
+        toggleMoreSheet(false);
+        switchTab(tabId, document.getElementById('moreNavBtn'));
+    }
+
+    // ===== داشبورد =====
+    async function loadDashboard() {
+        try {
+            const [custRes, reportRes] = await Promise.all([
+                apiFetch(`${API}/customers.php`),
+                apiFetch(`${API}/report.php?from_date=${new Date().toISOString().split('T')[0]}&to_date=${new Date().toISOString().split('T')[0]}`)
+            ]);
+            
+            const customers = await custRes.json();
+            const todayReport = await reportRes.json();
+            
+            document.getElementById('statCustomers').textContent = customers.length;
+            document.getElementById('statToday').textContent = 
+                formatNumber(todayReport.total || 0);
+            
+            // گزارش این ماه
+            const firstDay = new Date(new Date().setDate(1)).toISOString().split('T')[0];
+            const monthRes = await apiFetch(`${API}/report.php?from_date=${firstDay}&to_date=${new Date().toISOString().split('T')[0]}`);
+            const monthReport = await monthRes.json();
+            document.getElementById('statMonth').textContent = formatNumber(monthReport.total || 0);
+            
+            // گزارش کل
+            const totalRes = await apiFetch(`${API}/report.php?from_date=2020-01-01&to_date=${new Date().toISOString().split('T')[0]}`);
+            const totalReport = await totalRes.json();
+            document.getElementById('statTotal').textContent = formatNumber(totalReport.total || 0);
+            
+            // آخرین فعالیت‌ها
+            const recent = (totalReport.data || []).slice(0, 5);
+            if(recent.length === 0) {
+                document.getElementById('recentActivity').innerHTML = 
+                    '<div class="empty-state"><div class="icon">📭</div>هنوز فعالیتی ثبت نشده</div>';
+            } else {
+                document.getElementById('recentActivity').innerHTML = recent.map(r => `
+                    <div class="report-item ${r.type}">
+                        <strong>${r.name}</strong> - 
+                        <span>${r.type_label}</span><br>
+                        <span style="color:#1a73e8">${formatNumber(r.amount)} تومان</span>
+                        <span style="color:#999; float:left; font-size:0.75rem">${r.created_at?.split('T')[0] || ''}</span>
+                    </div>
+                `).join('');
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    // ===== ثبت مشتری =====
+    document.getElementById('customerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msgEl = document.getElementById('registerMsg');
+        const btn = document.getElementById('customerSubmitBtn');
+        
+        const data = {
+            name: document.getElementById('custName').value.trim(),
+            phone: document.getElementById('custPhone').value.trim(),
+            service_type: document.getElementById('custType').value,
+            rate: getRawNumber('custRate') || 0,
+            note: document.getElementById('custNote').value.trim()
+        };
+        
+        btn.disabled = true;
+        btn.textContent = '⏳ در حال ثبت...';
+        
+        try {
+            const res = await apiFetch(`${API}/customers.php`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            const result = await res.json();
+            
+            if(res.ok) {
+                msgEl.innerHTML = '<div class="alert alert-success">✅ مشتری با موفقیت ثبت شد</div>';
+                e.target.reset();
+                setTimeout(() => msgEl.innerHTML = '', 3000);
+            } else {
+                msgEl.innerHTML = `<div class="alert alert-error">❌ ${result.error}</div>`;
+            }
+        } catch(err) {
+            msgEl.innerHTML = '<div class="alert alert-error">❌ خطا در اتصال به سرور</div>';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '💾 ثبت مشتری';
+        }
+    });
+
+    // ===== لیست مشتریان =====
+    async function loadCustomers() {
+        document.getElementById('customersList').innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+        const res = await apiFetch(`${API}/customers.php`);
+        allCustomers = await res.json();
+        renderCustomers(allCustomers);
+    }
+
+    function renderCustomers(list) {
+        if(list.length === 0) {
+            document.getElementById('customersList').innerHTML = 
+                '<div class="empty-state"><div class="icon">👤</div>هیچ مشتری‌ای ثبت نشده</div>';
+            return;
+        }
+        
+        document.getElementById('customersList').innerHTML = list.map(c => `
+            <div class="customer-card ${c.service_type}">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div>
+                        <div class="customer-name">${c.name}</div>
+                        <div class="customer-phone">📞 ${c.phone}</div>
+                        <div class="customer-rate">💰 ${formatNumber(c.rate)} تومان / 
+                            ${c.service_type === 'monthly' ? 'ماه' : 'روز'}
+                        </div>
+                    </div>
+                    <span class="badge ${c.service_type === 'monthly' ? 'badge-monthly' : 'badge-daily'}">
+                        ${c.service_type === 'monthly' ? 'ماهانه' : 'روزانه'}
+                    </span>
+                </div>
+                <div style="margin-top:10px;">
+                    <button class="btn btn-warning btn-sm" onclick="editCustomer(${c.id})">✏️ ویرایش</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${c.id}, '${c.name}')">🗑️ حذف</button>
+                    <button class="btn btn-info btn-sm" onclick="viewCustomerRentals(${c.id}, '${c.name}')">📋 سوابق</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterCustomers(q) {
+        const filtered = allCustomers.filter(c => 
+            c.name.includes(q) || c.phone.includes(q)
+        );
+        renderCustomers(filtered);
+    }
+
+    async function deleteCustomer(id, name) {
+        if(!(await showConfirm(`آیا مشتری "${name}" حذف شود؟`))) return;
+        await apiFetch(`${API}/customers.php/${id}`, {method: 'DELETE'});
+        loadCustomers();
+    }
+
+    async function editCustomer(id) {
+        const customer = allCustomers.find(c => c.id === id);
+        if(!customer) return;
+        
+        const result = await showEditCustomerModal(customer);
+        if(!result || !result.name) return;
+        
+        await apiFetch(`${API}/customers.php/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                name: result.name, phone: result.phone, rate: result.rate,
+                service_type: customer.service_type
+            })
+        });
+        loadCustomers();
+    }
+
+    async function viewCustomerRentals(id, name) {
+        const res = await apiFetch(`${API}/rentals.php?customer_id=${id}`);
+        const rentals = await res.json();
+        
+        if(rentals.length === 0) {
+            await showAlert(`${name}: هیچ سابقه کرایه‌ای وجود ندارد`);
+            return;
+        }
+        
+        const list = rentals.slice(0, 10).map(r => 
+            `${r.type_label || r.type} - ${formatNumber(r.amount)} تومان - ${r.created_at?.split('T')[0] || ''}`
+        ).join('\n');
+        
+        await showAlert(`سوابق ${name}:\n\n${list}`);
+    }
+
+    // ===== ثبت کرایه =====
+    async function searchRentalCustomer(q) {
+        if(q.length < 2) {
+            document.getElementById('rentalSearchResults').innerHTML = '';
+            document.getElementById('selectedRentalCustomer').style.display = 'none';
+            return;
+        }
+        
+        const res = await apiFetch(`${API}/customers.php?search=${encodeURIComponent(q)}`);
+        const customers = await res.json();
+        
+        document.getElementById('rentalSearchResults').innerHTML = customers.map(c => `
+            <div class="search-result" onclick="selectRentalCustomer(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+                <strong>${c.name}</strong> - ${c.phone}
+                <span class="badge ${c.service_type === 'monthly' ? 'badge-monthly' : 'badge-daily'}" style="float:left">
+                    ${c.service_type === 'monthly' ? 'ماهانه' : 'روزانه'}
+                </span>
+            </div>
+        `).join('') || '<div class="empty-state">مشتری پیدا نشد</div>';
+    }
+
+    function selectRentalCustomer(customer) {
+        selectedRentalCustomer = customer;
+        document.getElementById('rentalSearchResults').innerHTML = '';
+        document.getElementById('searchRental').value = customer.name;
+        document.getElementById('selectedRentalCustomer').style.display = 'block';
+        document.getElementById('rentalCustomerInfo').innerHTML = `
+            <strong>👤 ${customer.name}</strong><br>
+            📞 ${customer.phone}<br>
+            💰 نرخ: ${formatNumber(customer.rate)} تومان / ${customer.service_type === 'monthly' ? 'ماه' : 'روز'}
+        `;
+        
+        if(customer.service_type === 'daily') {
+            document.getElementById('dailyAmountGroup').style.display = 'block';
+        }
+    }
+
+    async function doRental(action) {
+        if(!selectedRentalCustomer) {
+            await showAlert('ابتدا مشتری را انتخاب کنید');
+            return;
+        }
+        
+        const msgEl = document.getElementById('rentalMsg');
+        const body = { customer_id: selectedRentalCustomer.id };
+        
+        if(action === 'daily') {
+            const dailyAmt = getRawNumber('dailyAmount');
+            if(dailyAmt) body.amount = dailyAmt;
+        }
+        
+        const actionButtons = document.querySelectorAll('#selectedRentalCustomer button');
+        actionButtons.forEach(b => b.disabled = true);
+        
+        try {
+            const res = await apiFetch(`${API}/rentals.php?action=${action}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            
+            const result = await res.json();
+            
+            if(res.ok) {
+                msgEl.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+                setTimeout(() => msgEl.innerHTML = '', 4000);
+            } else {
+                msgEl.innerHTML = `<div class="alert alert-error">❌ ${result.error}</div>`;
+            }
+        } catch(err) {
+            msgEl.innerHTML = '<div class="alert alert-error">❌ خطا در اتصال به سرور</div>';
+        } finally {
+            actionButtons.forEach(b => b.disabled = false);
+        }
+    }
+
+    function toggleDailyAmount() {
+        const el = document.getElementById('dailyAmountGroup');
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ===== فاکتور =====
+    async function searchInvoiceCustomer(q) {
+        if(q.length < 2) {
+            document.getElementById('invoiceSearchResults').innerHTML = '';
+            document.getElementById('invoiceSection').style.display = 'none';
+            return;
+        }
+        
+        const res = await apiFetch(`${API}/customers.php?search=${encodeURIComponent(q)}`);
+        const customers = await res.json();
+        
+        document.getElementById('invoiceSearchResults').innerHTML = customers.map(c => `
+            <div class="search-result" onclick="selectInvoiceCustomer(${c.id})">
+                <strong>${c.name}</strong> - ${c.phone}
+            </div>
+        `).join('') || '<div class="empty-state">مشتری پیدا نشد</div>';
+    }
+
+// ۱. توابع کمکی برای فرمت تاریخ (اگر از قبل دارید پاک کنید و این دو را بگذارید)
+function safeFormatDateTime(dateStr) {
+    if (!dateStr) return 'نامشخص';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return 'نامشخص';
+        const datePart = new Intl.DateTimeFormat('fa-IR').format(d);
+        const timePart = d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+        return `${datePart}, ${timePart}`;
+    } catch (e) {
+        return 'نامشخص';
+    }
+}
+
+function safeFormatDate(dateStr) {
+    if (!dateStr) return 'نامشخص';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return 'نامشخص';
+        return new Intl.DateTimeFormat('fa-IR').format(d);
+    } catch (e) {
+        return 'نامشخص';
+    }
+}
+// بارگذاری مشخصات کارت در صورت وجود در حافظه مرورگر
+function loadBankSettings() {
+    if(document.getElementById('bankAccountName')) {
+        document.getElementById('bankAccountName').value = localStorage.getItem('bankAccountName') || '';
+    }
+    if(document.getElementById('bankCardNumber')) {
+        document.getElementById('bankCardNumber').value = localStorage.getItem('bankCardNumber') || '';
+    }
+}
+
+// ذخیره مشخصات کارت در حافظه مرورگر
+function saveBankSettings() {
+    const name = document.getElementById('bankAccountName').value.trim();
+    const card = document.getElementById('bankCardNumber').value.trim();
+
+    localStorage.setItem('bankAccountName', name);
+    localStorage.setItem('bankCardNumber', card);
+
+    showAlert('✅ مشخصات کارت با موفقیت ذخیره شد.');
+}
+
+// اجرای تابع خواندن اطلاعات هنگام باز شدن برنامه
+document.addEventListener('DOMContentLoaded', () => {
+    loadBankSettings();
+});
+
+
+// ۲. جایگزین کردن تابع انتخاب مشتری فاکتور (تولید یکپارچه متن همراه با شماره کارت)
+async function selectInvoiceCustomer(id) {
+    document.getElementById('invoiceSearchResults').innerHTML = '';
+    
+    try {
+        const res = await apiFetch(`${API}/invoice.php?customer_id=${id}`);
+        invoiceData = await res.json();
+        selectedInvoiceCustomer = invoiceData.customer;
+        
+        if (!selectedInvoiceCustomer) {
+            await showAlert('مشتری پیدا نشد');
+            return;
+        }
+
+        document.getElementById('searchInvoice').value = selectedInvoiceCustomer.name;
+        document.getElementById('invoiceCustomerInfo').innerHTML = 
+            `${selectedInvoiceCustomer.name} - ${selectedInvoiceCustomer.phone}`;
+
+        const today = new Intl.DateTimeFormat('fa-IR').format(new Date());
+        
+        // ساختن لیست ریز فاکتورها
+        let detailsHtml = '';
+        if (invoiceData.rentals && invoiceData.rentals.length > 0) {
+            detailsHtml = `جزئیات کارکرد شما تا تاریخ ${today} به شرح زیر است:<br>`;
+            invoiceData.rentals.forEach(r => {
+                const amt = Number(r.amount || 0).toLocaleString('fa-IR');
+                if (r.type === 'daily') {
+                    const dt = safeFormatDateTime(r.created_at); // نمایش تاریخ و ساعت
+                    detailsHtml += `🔸 سرویس روزانه (${dt}): ${amt} تومان<br>`;
+                } else if (r.type === 'monthly') {
+                    const sd = safeFormatDate(r.start_date);
+                    const ed = safeFormatDate(r.end_date);
+                    detailsHtml += `🔸 سرویس ماهانه (از ${sd} تا ${ed}): ${amt} تومان<br>`;
+                }
+            });
+            detailsHtml += `<br>`; // یک خط فاصله بعد از لیست
+        }
+
+        // --- بخش جدید: خواندن مشخصات کارت از تنظیمات ---
+        const bankName = localStorage.getItem('bankAccountName') || '';
+        const bankCard = localStorage.getItem('bankCardNumber') || '';
+        
+        let bankInfoHtml = '';
+        if (bankName !== '' || bankCard !== '') {
+            // اگر نام یا شماره کارتی در تنظیمات ثبت شده بود، این متن ساخته می‌شود
+            bankInfoHtml = `<br><br>💳 جهت تسویه حساب:<br>${bankName}<br>${bankCard}`;
+        }
+        // ----------------------------------------------
+
+        // جمع کردن همه متن‌ها فقط داخل invoiceText
+        document.getElementById('invoiceText').innerHTML = `
+مشتری گرامی ${selectedInvoiceCustomer.name} عزیز،<br><br>
+${detailsHtml}
+مبلغ کل کرایه:<br>
+<strong style="color:#1a73e8; font-size:1.1rem">
+    ${Number(invoiceData.total || 0).toLocaleString('fa-IR')} تومان
+</strong>${bankInfoHtml}<br><br>
+با تشکر
+        `;
+
+        document.getElementById('invoiceSection').style.display = 'block';
+
+    } catch (err) {
+        console.error("Error fetching invoice:", err);
+        await showAlert("خطا در دریافت اطلاعات فاکتور");
+    }
+}
+
+async function sendSMS() {
+
+// بررسی فعال بودن ارسال پیامک از تنظیمات
+const enablePhoneSMS = localStorage.getItem("enablePhoneSMS");
+if (enablePhoneSMS !== "true") {
+    await showAlert('ارسال پیامک از برنامه گوشی در تنظیمات فعال نشده است');
+    return;
+}
+
+if(!selectedInvoiceCustomer) {
+    await showAlert('لطفا ابتدا مشتری را انتخاب کنید');
+    return;
+}
+
+if(!invoiceData) {
+    await showAlert('اطلاعات فاکتور یافت نشد');
+    return;
+}
+
+// گرفتن دقیق متن فاکتور از روی صفحه (که شامل تمام جزئیات است)
+let rawHtml = document.getElementById('invoiceText').innerHTML;
+
+// تبدیل تگ‌های <br> به خط جدید (\n) برای پیامک
+let message = rawHtml.replace(/<br\s*\/?>/gi, '\n');
+
+// حذف سایر تگ‌های HTML 
+message = message.replace(/<[^>]+>/g, '');
+
+// تمیز کردن فاصله‌های اضافی در ابتدا و انتهای هر خط
+message = message.split('\n').map(line => line.trim()).join('\n').trim();
+
+const phone = selectedInvoiceCustomer.phone.replace(/\D/g, '');
+
+if(!phone || phone.length < 10) {
+    await showAlert('شماره تلفن مشتری معتبر نیست');
+    return;
+}
+
+const ua = navigator.userAgent.toLowerCase();
+let smsUrl;
+
+// سازگاری با آیفون و اندروید
+if (ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1) {
+    smsUrl = `sms:${phone}&body=${encodeURIComponent(message)}`;
+} else {
+    smsUrl = `sms:${phone}?body=${encodeURIComponent(message)}`;
+}
+
+try {
+    window.location.href = smsUrl;
+} catch(e) {
+    await showAlert('خطا در باز کردن برنامه پیامک\nلطفا به صورت دستی پیامک را ارسال کنید.\n\nمتن پیام:\n' + message + '\n\nشماره: ' + phone);
+}
+}
+
+
+
+    async function confirmInvoiceSent() {
+        if(!selectedInvoiceCustomer) return;
+        
+        await apiFetch(`${API}/invoice.php`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                customer_id: selectedInvoiceCustomer.id,
+                amount: invoiceData.total
+            })
+        });
+        
+        await showAlert('✅ فاکتور در سیستم ثبت شد');
+        document.getElementById('invoiceSection').style.display = 'none';
+        document.getElementById('searchInvoice').value = '';
+        selectedInvoiceCustomer = null;
+        invoiceData = null;
+    }
+
+    // ===== گزارش =====
+    async function loadReport() {
+        const fromJalali = document.getElementById('fromDate').value;
+        const toJalali = document.getElementById('toDate').value;
+        const type = document.getElementById('reportType').value;
+        
+        // Convert Jalali to Gregorian for API
+        const fromParsed = parseJalaliDate(fromJalali);
+        const toParsed = parseJalaliDate(toJalali);
+        
+        let fromGregorian, toGregorian;
+        
+        if (fromParsed) {
+            const gFrom = jalaliToGregorian(fromParsed.y, fromParsed.m, fromParsed.d);
+            fromGregorian = `${gFrom.y}-${String(gFrom.m).padStart(2, '0')}-${String(gFrom.d).padStart(2, '0')}`;
+        } else {
+            fromGregorian = new Date().toISOString().split('T')[0];
+        }
+        
+        if (toParsed) {
+            const gTo = jalaliToGregorian(toParsed.y, toParsed.m, toParsed.d);
+            toGregorian = `${gTo.y}-${String(gTo.m).padStart(2, '0')}-${String(gTo.d).padStart(2, '0')}`;
+        } else {
+            toGregorian = new Date().toISOString().split('T')[0];
+        }
+        
+        document.getElementById('reportResult').innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+        
+        const res = await apiFetch(`${API}/report.php?from_date=${fromGregorian}&to_date=${toGregorian}&type=${type}`);
+        const data = await res.json();
+        
+        if(!data.data || data.data.length === 0) {
+            document.getElementById('reportResult').innerHTML = 
+                '<div class="empty-state"><div class="icon">📭</div>داده‌ای برای نمایش وجود ندارد</div>';
+            return;
+        }
+        
+        document.getElementById('reportResult').innerHTML = `
+            <div class="total-bar">
+                <div class="amount">${formatNumber(data.total)} تومان</div>
+                <div class="label">مجموع ${data.count} رکورد</div>
+            </div>
+            ${data.data.map(r => `
+                <div class="report-item ${r.type}">
+                    <strong>${r.name}</strong>
+                    <span style="float:left" class="badge ${r.type === 'daily' ? 'badge-daily' : 'badge-monthly'}">
+                        ${r.type_label}
+                    </span><br>
+                    📞 ${r.phone}<br>
+                    💰 <strong>${formatNumber(r.amount)} تومان</strong>
+                    <span style="color:#999; font-size:0.8rem"> - ${r.created_at?.split('T')[0] || ''}</span>
+                </div>
+            `).join('')}
+        `;
+    }
+
+    // ===== ریست =====
+async function resetSystem() {
+    // هشدار اول
+    if(!(await showConfirm('⚠️ تمام کرایه‌ها، سفرها و پرداختی‌ها حذف می‌شوند!\n(لیست مشتریان و خودروها باقی می‌ماند)\nمطمئن هستید؟'))) return;
+    
+    // هشدار دوم: گرفتن تاییدیه متنی
+    const confirmText = await showPrompt('دقت کنید! این عملیات برگشت‌پذیر نیست.\nبرای تایید نهایی، کلمه «تایید» را در کادر زیر تایپ کنید:');
+    if(confirmText !== 'تایید') {
+        await showAlert('عملیات لغو شد. کلمه وارد شده صحیح نبود.');
+        return;
+    }
+    
+    try {
+        await apiFetch(`${API}/report.php?reset=1`, {method: 'DELETE'});
+        await showAlert('✅ سیستم ریست شد و تمام کرایه‌ها پاک شدند.');
+        // بهتر است صفحه را کامل رفرش کنیم تا تمام جداول و بدهی‌ها صفر شوند
+        location.reload(); 
+    } catch (error) {
+        console.error("خطا در ریست سیستم:", error);
+        await showAlert('❌ خطایی در ارتباط با سرور رخ داد.');
+    }
+}
+
+
+
+    // ===== فرمت عدد =====
+    function formatNumber(num) {
+        return Number(num).toLocaleString('fa-IR');
+    }
+
+    // ===== اجرای اولیه =====
+    setPersianDate();
+    setDefaultDates();
+    loadDashboard();
+    ['payAmount', 'custRate', 'dailyAmount'].forEach(attachMoneyFormatting);
+    
+    // Initialize Jalali Date Pickers
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.JalaliDatePicker) {
+        new JalaliDatePicker('fromDate', {
+            onSelect: function(date) {
+                console.log('From date selected:', date);
+            }
+        });
+        new JalaliDatePicker('toDate', {
+            onSelect: function(date) {
+                console.log('To date selected:', date);
+            }
+        });
+    }
+});
+
+
+// ذخیره تنظیم ارسال پیامک
+window.addEventListener("load", function () {
+
+    const checkbox = document.getElementById("enablePhoneSMS");
+
+    if(!checkbox) return;
+
+    if(localStorage.getItem("enablePhoneSMS") === "true"){
+        checkbox.checked = true;
+    }
+
+    checkbox.addEventListener("change", function(){
+        localStorage.setItem("enablePhoneSMS", this.checked ? "true" : "false");
+    });
+
+});
+// ==========================================
+// بخش توابع پرداخت بدهی (نسخه نهایی و یکپارچه)
+// ==========================================
+
+// ==================== تنظیمات و متغیرهای سراسری ====================
+
+// اگر فایل‌های PHP در پوشه دیگری هستند، آدرس آن را اینجا بنویسید
+// اگر در کنار فایل index.html هستند، خالی بگذارید
+// ==========================================
+// بخش توابع پرداخت بدهی (نسخه نهایی و یکپارچه)
+// ==========================================
+
+let payCustomerId = null;
+
+// ۱. جستجوی مشتری در بخش پرداخت
+async function searchPayCustomer() {
+    const query = document.getElementById("paySearchCustomer").value;
+    const listDiv = document.getElementById("payCustomerList");
+    const payActionSection = document.getElementById("payActionSection");
+
+    if (query.length < 2) {
+        listDiv.innerHTML = "";
+        payActionSection.style.display = "none";
+        return;
+    }
+
+    try {
+        const res = await apiFetch(`${API}/customers.php?search=` + encodeURIComponent(query));
+        const data = await res.json();
+        
+        listDiv.innerHTML = "";
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            listDiv.innerHTML = "<div style='padding:10px; text-align:right; color:#888;'>مشتری یافت نشد.</div>";
+            return;
+        }
+
+        data.forEach(c => {
+            const div = document.createElement("div");
+            div.innerHTML = `<strong>${c.name}</strong> - بدهی: <span style="color:red">${c.debt || 0}</span> تومان`;
+            div.style.padding = "10px";
+            div.style.borderBottom = "1px solid #eee";
+            div.style.cursor = "pointer";
+            div.style.textAlign = "right";
+            
+            div.onclick = () => selectPayCustomer(c.id, c.name, c.debt);
+            listDiv.appendChild(div);
+        });
+    } catch (err) {
+        console.error("Error searching customers:", err);
+        listDiv.innerHTML = "<div style='color:red; padding:10px; text-align:right;'>خطا در ارتباط با سرور</div>";
+    }
+}
+
+// ۲. انتخاب مشتری از لیست
+function selectPayCustomer(id, name, debt) {
+    payCustomerId = id;
+    
+    document.getElementById("payCustomerName").innerHTML = `<b>${name}</b> (بدهی: ${debt || 0} تومان)`;
+    
+    document.getElementById("payCustomerList").innerHTML = "";
+    document.getElementById("paySearchCustomer").value = name; 
+    document.getElementById("payActionSection").style.display = "block"; 
+    document.getElementById("payAmount").value = ""; 
+}
+
+// ۳. ثبت نهایی مبلغ پرداختی
+async function submitPayment() {
+    const amount = getRawNumber("payAmount");
+
+    if (!payCustomerId) {
+        await showAlert("لطفاً ابتدا یک مشتری را انتخاب کنید.");
+        return;
+    }
+    if (!amount || amount <= 0) {
+        await showAlert("لطفاً مبلغ پرداختی را به درستی وارد کنید.");
+        return;
+    }
+
+    const btn = document.getElementById("submitPaymentBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ در حال ثبت...";
+
+    try {
+        const res = await apiFetch(`${API}/pay_debt.php`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                customer_id: payCustomerId,
+                amount: amount
+            })
+        });
+        const data = await res.json();
+
+        if (data.success || data.message) {
+            await showAlert(data.message || "✅ پرداخت با موفقیت ثبت شد.");
+            
+            document.getElementById("payAmount").value = "";
+            document.getElementById("paySearchCustomer").value = ""; 
+            document.getElementById("payActionSection").style.display = "none"; 
+            document.getElementById("payCustomerName").innerHTML = "";
+            payCustomerId = null;
+
+            if (typeof loadDashboard === "function") {
+                loadDashboard();
+            }
+        } else {
+            await showAlert("❌ خطا در ثبت: " + (data.error || "نامشخص"));
+        }
+    } catch (err) {
+        console.error("Error submitting payment:", err);
+        await showAlert("خطا در ارتباط با سرور. لطفاً وضعیت اینترنت را بررسی کنید.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "✅ ثبت پرداختی";
+    }
+}
+
+
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

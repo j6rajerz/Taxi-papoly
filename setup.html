@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اتصال به گیت‌هاب - تاکسی خانم پاپلی</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .box {
+    background: white; border-radius: 20px; padding: 30px 24px; max-width: 460px; width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,.3);
+  }
+  h1 { font-size: 1.3rem; color: #1a73e8; margin-bottom: 6px; text-align:center; }
+  p.desc { color:#666; font-size:.85rem; margin-bottom:18px; text-align:center; line-height:1.9; }
+  .form-group { margin-bottom: 14px; text-align: right; }
+  label { display:block; font-size:.85rem; font-weight:500; margin-bottom:6px; color:#444; }
+  input { width:100%; padding:12px 14px; border:2px solid #e0e0e0; border-radius:10px; font-size:.95rem; font-family:inherit; direction:ltr; text-align:left; }
+  input:focus { outline:none; border-color:#1a73e8; }
+  .hint { font-size:.72rem; color:#999; margin-top:4px; }
+  .btn { width:100%; padding:13px; background:linear-gradient(135deg,#1a73e8,#0d47a1); color:#fff; border:none; border-radius:10px; font-size:.95rem; font-weight:500; cursor:pointer; margin-top:6px; }
+  .btn:active { transform: scale(.98); }
+  .btn-secondary { background:#eee; color:#333; margin-top:10px; }
+  .msg { padding:10px 12px; border-radius:8px; font-size:.85rem; margin-bottom:14px; display:none; }
+  .msg.error { background:#fce8e6; color:#c62828; }
+  .msg.success { background:#e6f4ea; color:#1e7e34; }
+  .warn-box { background:#fff8e1; border:1px solid #ffe0a3; border-radius:10px; padding:12px; font-size:.78rem; color:#8a6100; margin-bottom:16px; line-height:1.9; }
+  details { margin-bottom:14px; }
+  summary { cursor:pointer; color:#1a73e8; font-size:.85rem; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🚕 اتصال به گیت‌هاب</h1>
+  <p class="desc">اطلاعات این برنامه (مشتریان، کرایه‌ها، بدهی‌ها) در یک فایل داخل یک ریپوی گیت‌هاب ذخیره می‌شود. این تنظیمات فقط یک‌بار و فقط روی همین گوشی/مرورگر لازم است.</p>
+
+  <div class="warn-box">
+    ⚠️ ریپویی که برای «ذخیره اطلاعات» انتخاب می‌کنید حتماً باید <b>Private (خصوصی)</b> باشد، چون اسم و شماره تلفن مشتریان داخلش نگه‌داری می‌شود. ریپوی سایت (که روی GitHub Pages پابلیش می‌شود) می‌تواند جدا و پابلیک باشد.
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <form id="setupForm">
+    <div class="form-group">
+      <label>نام کاربری گیت‌هاب (Owner)</label>
+      <input type="text" id="owner" placeholder="مثال: papoli-taxi" required>
+    </div>
+    <div class="form-group">
+      <label>نام ریپوی داده (Repository)</label>
+      <input type="text" id="repo" placeholder="مثال: papoli-data" required>
+      <div class="hint">پیشنهاد: یک ریپوی جدید و Private فقط برای داده بسازید.</div>
+    </div>
+    <div class="form-group">
+      <label>شاخه (Branch)</label>
+      <input type="text" id="branch" value="main">
+    </div>
+    <div class="form-group">
+      <label>مسیر فایل داده</label>
+      <input type="text" id="path" value="data/db.json">
+    </div>
+    <div class="form-group">
+      <label>Personal Access Token</label>
+      <input type="password" id="token" placeholder="ghp_..." required>
+      <div class="hint">توکن فقط داخل همین مرورگر ذخیره می‌شود و به هیچ سروری جز گیت‌هاب فرستاده نمی‌شود.</div>
+    </div>
+
+    <details>
+      <summary>چطور توکن بسازم؟</summary>
+      <div class="hint" style="margin-top:8px; line-height:2;">
+        1) به آدرس github.com/settings/tokens بروید و «Fine-grained tokens» را انتخاب کنید.<br>
+        2) یک توکن جدید بسازید و در «Repository access» فقط همان ریپوی داده را انتخاب کنید.<br>
+        3) در «Permissions» گزینه‌ی Contents را روی «Read and write» بگذارید.<br>
+        4) توکن ساخته‌شده را همین‌جا وارد کنید.
+      </div>
+    </details>
+
+    <button type="submit" class="btn">💾 ذخیره و اتصال</button>
+  </form>
+  <button class="btn btn-secondary" onclick="testConnection()">🔌 تست اتصال</button>
+</div>
+
+<script src="assets/gh-storage.js"></script>
+<script>
+  // اگر از قبل تنظیم شده، مقادیر را نشان بده
+  (function fill() {
+    const c = ghGetConfig();
+    if (c.owner) document.getElementById('owner').value = c.owner;
+    if (c.repo) document.getElementById('repo').value = c.repo;
+    if (c.branch) document.getElementById('branch').value = c.branch;
+    if (c.path) document.getElementById('path').value = c.path;
+  })();
+
+  function showMsg(text, type) {
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.className = 'msg ' + type;
+    el.style.display = 'block';
+  }
+
+  document.getElementById('setupForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    ghSaveConfig({
+      owner: document.getElementById('owner').value,
+      repo: document.getElementById('repo').value,
+      branch: document.getElementById('branch').value,
+      path: document.getElementById('path').value,
+      token: document.getElementById('token').value
+    });
+    showMsg('✅ تنظیمات ذخیره شد. در حال بررسی اتصال...', 'success');
+    testConnection(true);
+  });
+
+  async function testConnection(andRedirect) {
+    try {
+      await ghLoadDB(true);
+      showMsg('✅ اتصال با موفقیت برقرار شد.' + (andRedirect ? ' انتقال به صفحه ورود...' : ''), 'success');
+      if (andRedirect) {
+        setTimeout(() => { location.href = 'login.html'; }, 900);
+      }
+    } catch (err) {
+      showMsg('❌ اتصال برقرار نشد: ' + err.message, 'error');
+    }
+  }
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

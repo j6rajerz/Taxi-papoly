@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود - تاکسی خانم پاپلی</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <!-- فونت‌های Vazirmatn موجود نیستند، از فونت پیش‌فرض استفاده می‌شود -->
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;text-align: center;
+            letter-spacing: 3px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1a73e8;}
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .error {
+            background: #fce8e6;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }</style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="logo">
+            <img src="logo.png" alt="لوگو">
+        </div>
+        <h1>🚕 تاکسی خانم پاپلی</h1>
+        <p>سیستم مدیریت کرایه</p>
+        
+        <div id="errorMsg" class="error"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>🔐 رمز عبور</label>
+                <input type="password" id="password" placeholder="****" maxlength="4" required autofocus>
+            </div><button type="submit" class="btn">ورود به سیستم</button>
+        </form>
+    </div>
+
+    <script src="assets/gh-storage.js"></script>
+    <script>
+        // اگر تنظیمات اتصال به گیت‌هاب هنوز انجام نشده، اول به صفحه تنظیمات برو
+        if (!ghHasConfig()) {
+            window.location.href = 'setup.html';
+        }
+
+        // اگر قبلا لاگین کرده، مستقیم به داشبورد برود
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            try {
+                const res = await apiFetch('api/auth.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({action: 'login', password})
+                });
+                
+                const result = await res.json();
+                
+                if(result.success) {
+                    localStorage.setItem('auth_token', result.token);
+                    window.location.href = 'index.html';
+                } else {
+                    errorMsg.textContent = '❌ رمز عبور اشتباه است';
+                    errorMsg.style.display = 'block';
+                    document.getElementById('password').value = '';
+                }
+            } catch(err) {
+                errorMsg.textContent = '❌ خطا در اتصال به سرور';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
